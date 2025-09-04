@@ -23,6 +23,12 @@ task downloadJars {
     }
 }
 
+task assemble {
+    dependsOn downloadJars
+    group = 'build'
+    description = 'Assembles the outputs of this project (downloads JARs)'
+}
+
 tasks.withType(PublishToMavenRepository) {
     dependsOn downloadJars
 }
@@ -34,7 +40,6 @@ publishing {
             artifactId = 'gradle-tooling-api'
             version = project.version
             
-            // Add the downloaded JARs as artifacts
             artifact file("build/libs/gradle-tooling-api-${gradleToolingVersion}.jar")
             artifact file("build/libs/gradle-tooling-api-${gradleToolingVersion}-sources.jar"), {
                 classifier = 'sources'
