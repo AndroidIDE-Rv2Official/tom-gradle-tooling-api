@@ -1,0 +1,92 @@
+plugins {
+    id 'maven-publish'
+}
+
+group = 'com.github.mohammedbaqer.rv2l'
+version = '8.13'
+
+// Define the Gradle version to download
+def gradleToolingVersion = '8.13'
+def baseUrl = "https://repo.gradle.org/gradle/libs-releases/org/gradle/gradle-tooling-api/${gradleToolingVersion}"
+
+// Task to download the original JARs
+task downloadJars {
+    doLast {
+        mkdir 'build/libs'
+        
+        // Download main JAR
+        ant.get(src: "${baseUrl}/gradle-tooling-api-${gradleToolingVersion}.jar",
+                dest: "build/libs/gradle-tooling-api-${gradleToolingVersion}.jar")
+        
+        // Download sources JAR
+        ant.get(src: "${baseUrl}/gradle-tooling-api-${gradleToolingVersion}-sources.jar",
+                dest: "build/libs/gradle-tooling-api-${gradleToolingVersion}-sources.jar")
+        
+        // Download javadoc JAR
+        ant.get(src: "${baseUrl}/gradle-tooling-api-${gradleToolingVersion}-javadoc.jar",
+                dest: "build/libs/gradle-tooling-api-${gradleToolingVersion}-javadoc.jar")
+    }
+}
+
+// Create artifacts from downloaded JARs
+artifacts {
+    archives file("build/libs/gradle-tooling-api-${gradleToolingVersion}.jar")
+    archives file("build/libs/gradle-tooling-api-${gradleToolingVersion}-sources.jar") {
+        classifier = 'sources'
+    }
+    archives file("build/libs/gradle-tooling-api-${gradleToolingVersion}-javadoc.jar") {
+        classifier = 'javadoc'
+    }
+}
+
+// Make sure JARs are downloaded before building
+build.dependsOn downloadJars
+publishToMavenLocal.dependsOn downloadJars
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = project.group
+            artifactId = 'gradle-tooling-api'
+            version = project.version
+            
+            from components.java
+            
+            // Add the downloaded JARs as artifacts
+            artifact file("build/libs/gradle-tooling-api-${gradleToolingVersion}.jar")
+            artifact file("build/libs/gradle-tooling-api-${gradleToolingVersion}-sources.jar"), {
+                classifier = 'sources'
+            }
+            artifact file("build/libs/gradle-tooling-api-${gradleToolingVersion}-javadoc.jar"), {
+                classifier = 'javadoc'
+            }
+            
+            pom {
+                name = 'Gradle Tooling API - Republished'
+                description = 'The Gradle Tooling API - Republished via JitPack'
+                url = 'https://github.com/AndroidIDE-Rv2Official/tom-gradle-tooling-api'
+                
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                
+                developers {
+                    developer {
+                        id = 'AndroidIDE-Rv2Official'
+                        name = 'AndroidIDE-Rv2'
+                        url = 'https://github.com/AndroidIDE-Rv2Official'
+                    }
+                }
+                
+                scm {
+                    connection = 'scm:git:git://github.com/AndroidIDE-Rv2Official/tom-gradle-tooling-api.git'
+                    developerConnection = 'scm:git:ssh://github.com/AndroidIDE-Rv2Official/tom-gradle-tooling-api.git'
+                    url = 'https://github.com/AndroidIDE-Rv2Official/tom-gradle-tooling-api'
+                }
+            }
+        }
+    }
+}
