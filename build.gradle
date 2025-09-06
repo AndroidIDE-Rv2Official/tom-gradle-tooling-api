@@ -2,10 +2,10 @@ plugins {
     id 'maven-publish'
 }
 
-group = 'io.github.mohammed-baqer-null'
-version = '8.6'
+group = 'com.github.mohammedbaqer.rv2l'
+version = '8.13'
 
-def gradleToolingVersion = '8.6'
+def gradleToolingVersion = '8.13'
 def baseUrl = "https://repo.gradle.org/gradle/libs-releases/org/gradle/gradle-tooling-api/${gradleToolingVersion}"
 
 task downloadJars {
@@ -23,6 +23,12 @@ task downloadJars {
     }
 }
 
+task assemble {
+    dependsOn downloadJars
+    group = 'build'
+    description = 'Assembles the outputs of this project (downloads JARs)'
+}
+
 tasks.withType(PublishToMavenRepository) {
     dependsOn downloadJars
 }
@@ -34,7 +40,6 @@ publishing {
             artifactId = 'gradle-tooling-api'
             version = project.version
             
-            // Add the downloaded JARs as artifacts
             artifact file("build/libs/gradle-tooling-api-${gradleToolingVersion}.jar")
             artifact file("build/libs/gradle-tooling-api-${gradleToolingVersion}-sources.jar"), {
                 classifier = 'sources'
