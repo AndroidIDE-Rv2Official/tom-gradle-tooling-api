@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'com.github.mohammedbaqer.rv2l'
-version = '8.10'
+version = '8.6'
 
 def gradleToolingVersion = '8.10'
 def baseUrl = "https://repo.gradle.org/gradle/libs-releases/org/gradle/gradle-tooling-api/${gradleToolingVersion}"
