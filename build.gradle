@@ -3,9 +3,9 @@ plugins {
 }
 
 group = 'com.github.mohammedbaqer.rv2l'
-version = '8.6'
+version = '9.0.0'
 
-def gradleToolingVersion = '8.6'
+def gradleToolingVersion = '9.0.0'
 def baseUrl = "https://repo.gradle.org/gradle/libs-releases/org/gradle/gradle-tooling-api/${gradleToolingVersion}"
 
 task downloadJars {
